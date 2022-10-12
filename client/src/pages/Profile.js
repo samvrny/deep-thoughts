@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_USER, QUERY_ME } from '../utils/queries';
+import { ADD_FRIEND } from '../utils/mutations';
 import ThoughtList from '../components/ThoughtList';
 import FriendList from '../components/FriendList';
+import ThoughtForm from '../components/ThoughtForm';
 import Auth from '../utils/auth';
 
 const Profile = () => {
@@ -14,6 +16,8 @@ const Profile = () => {
   });
 
   const user = data?.me || data?.user || {};
+
+  const [addFriend] = useMutation(ADD_FRIEND);
 
   //navigate to personal profile page if username is the logged in users
   if(Auth.loggedIn() && Auth.getProfile().data.username === userParam) {
@@ -32,12 +36,27 @@ const Profile = () => {
     )
   }
 
+  const handleClick = async() => {
+    try {
+      await addFriend({
+        variables: { id: user._id }
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div>
       <div className="flex-row mb-3">
       <h2 className='bg-dark text-secondary p-3 display-inline-block'>
         Viewing {userParam ? `${user.username}'s` : 'your'} profile.
       </h2>
+      {userParam && (
+      <button className='btn ml-auto' onClick={handleClick}>
+        Add Friend
+      </button>
+      )}
       </div>
 
       <div className="flex-row justify-space-between mb-3">
@@ -48,6 +67,7 @@ const Profile = () => {
           <FriendList username={user.username} friendCount={user.friendCount} friends={user.friends} />
         </div>
       </div>
+      <div className='mb-3'>{!userParam && <ThoughtForm/>}</div>
     </div>
   );
 };
