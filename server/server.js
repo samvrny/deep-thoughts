@@ -1,15 +1,15 @@
-const express = require('express');
-const { authMiddleware } = require('./utils/auth');
+const express = require('express'); //Y
+const { authMiddleware } = require('./utils/auth'); //Y
 
 //import ApolloServer
-const { ApolloServer } = require('apollo-server-express');
-const path = require('path');
+const { ApolloServer } = require('apollo-server-express'); //Y
+const path = require('path'); //Y
 
 //import typeDefs and resolvers
-const { typeDefs, resolvers } = require('./schemas');
-const db = require('./config/connection');
+const { typeDefs, resolvers } = require('./schemas'); //Y
+const db = require('./config/connection'); //Y
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001; //Y
 
 //create a new Apollo server and pass in our schema
 const server = new ApolloServer({
@@ -18,7 +18,7 @@ const server = new ApolloServer({
   context: authMiddleware 
 });
 
-const app = express();
+const app = express(); //Y
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
